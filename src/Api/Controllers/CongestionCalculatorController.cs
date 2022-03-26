@@ -1,3 +1,6 @@
+using Domain.Models;
+using Domain.Rules.Calculator;
+using Domain.Vehicles;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -30,8 +33,15 @@ namespace Api.Controllers
         public int Get([FromForm] string dates, [FromForm]string vehicle)
         {
             var dateValues = dates.Split(',').Select(it => DateTime.Parse(it))
-                .ToList();
-            return 0;
+                .ToArray();
+            var car = VehicleFactory.GetInstance(vehicle);
+            var command = new CongestionCommand()
+            {
+                Dates = dateValues,
+                Vehicle = car
+            };
+            var calculator = new CalculatorRulesEngine();
+            return calculator.Execute(command);
         }
     }
 }
