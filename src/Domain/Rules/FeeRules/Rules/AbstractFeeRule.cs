@@ -7,9 +7,9 @@ namespace Domain.Rules.FeeRules.Rules
     {
         public readonly DateRulesEngine _dateRulesEngine;
 
-        public AbstractFeeRule()
+        public AbstractFeeRule(DateRulesEngine dateRulesEngine)
         {
-            _dateRulesEngine = new DateRulesEngine();
+            _dateRulesEngine = dateRulesEngine;
         }
 
         public abstract int Evaluate(DateTime inputParameter);

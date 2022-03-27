@@ -20,7 +20,7 @@ namespace Domain.Vehicles
             vehicles.TryGetValue(name.ToLower(), out var vehicle);
             return vehicle != null
                 ? vehicle()
-                : null;
+                : new Car();
         }
     }
 }

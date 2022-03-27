@@ -7,8 +7,9 @@ namespace Domain.Rules.Calculator
     public class CalculatorRulesEngine : RulesEngine<CalculatorRule, CongestionCommand, int>
     {
         private readonly int _maxFee;
-        public CalculatorRulesEngine()
+        public CalculatorRulesEngine(IServiceProvider serviceProvider) : base(serviceProvider)
         {
+
             _maxFee = 60;
         }
 

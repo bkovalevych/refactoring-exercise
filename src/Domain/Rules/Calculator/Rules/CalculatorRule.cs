@@ -11,11 +11,11 @@ namespace Domain.Rules.Calculator.Rules
         private readonly CarRulesEngine _carRulesEngine;
         private readonly TimeSpan _maxDelay;
 
-        public CalculatorRule()
+        public CalculatorRule(CarRulesEngine carRulesEngine, FeeRulesEngine feeRulesEngine)
         {
             _maxDelay = TimeSpan.FromHours(1);
-            _carRulesEngine = new CarRulesEngine();
-            _feeRulesEngine = new FeeRulesEngine();
+            _carRulesEngine = carRulesEngine;
+            _feeRulesEngine = feeRulesEngine;
         }
 
         public int Evaluate(CongestionCommand inputParameter)

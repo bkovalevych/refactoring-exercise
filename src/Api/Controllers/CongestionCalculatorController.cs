@@ -9,9 +9,10 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class CongestionCalculatorController : ControllerBase
     {
-        public CongestionCalculatorController(ILogger<CongestionCalculatorController> logger)
+        private readonly CalculatorRulesEngine _calculatorRulesEngine;
+        public CongestionCalculatorController(ILogger<CongestionCalculatorController> logger, CalculatorRulesEngine calculatorRulesEngine)
         {
-
+            _calculatorRulesEngine = calculatorRulesEngine;
         }
         /// <summary>
         /// 
@@ -40,8 +41,7 @@ namespace Api.Controllers
                 Dates = dateValues,
                 Vehicle = car
             };
-            var calculator = new CalculatorRulesEngine();
-            return calculator.Execute(command);
+            return _calculatorRulesEngine.Execute(command);
         }
     }
 }

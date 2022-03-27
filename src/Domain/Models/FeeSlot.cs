@@ -2,9 +2,9 @@
 {
     public class FeeSlot
     {
-        public TimeOnly TimeFrom { get; set; }
+        public DateTime TimeFrom { get; set; }
 
-        public TimeOnly TimeTo { get; set; }
+        public DateTime TimeTo { get; set; }
 
         public int Cost { get; set; }
     }

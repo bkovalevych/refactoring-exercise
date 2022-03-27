@@ -5,6 +5,10 @@ namespace Domain.Rules.DateRules
 {
     public class DateRulesEngine : RulesEngine<AbstractDateRule, DateTime, bool>
     {
+        public DateRulesEngine(IServiceProvider serviceProvider) : base(serviceProvider)
+        {
+
+        }
         public override bool Execute(DateTime inputParameter)
         {
             return !base.Execute(inputParameter);
