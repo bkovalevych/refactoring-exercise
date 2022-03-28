@@ -12,6 +12,10 @@ namespace Domain
 
         public int GetTax(string vehicleType, DateTime[] dates)
         {
+            if (!dates.Any())
+            {
+                return 0;
+            }
             DateTime intervalStart = dates[0];
             int totalFee = 0;
             int tempFee = 0;
@@ -93,7 +97,7 @@ namespace Domain
             else return 0;
         }
 
-        private bool IsTollFreeDate(DateTime date)
+        public bool IsTollFreeDate(DateTime date)
         {
             var isWeekend = CheckIsWeekend(date);
             var isSpecialMonth = CheckIsSpecialMonth(date);
