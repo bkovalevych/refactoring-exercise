@@ -40,13 +40,8 @@ public class CongestionTaxCalculator
     private bool IsTollFreeVehicle(Vehicle vehicle)
     {
         if (vehicle == null) return false;
-        String vehicleType = vehicle.GetVehicleType();
-        return vehicleType.Equals(TollFreeVehicles.Motorcycle.ToString()) ||
-               vehicleType.Equals(TollFreeVehicles.Tractor.ToString()) ||
-               vehicleType.Equals(TollFreeVehicles.Emergency.ToString()) ||
-               vehicleType.Equals(TollFreeVehicles.Diplomat.ToString()) ||
-               vehicleType.Equals(TollFreeVehicles.Foreign.ToString()) ||
-               vehicleType.Equals(TollFreeVehicles.Military.ToString());
+        string vehicleType = vehicle.GetVehicleType();
+        return Enum.GetNames<TollFreeVehicles>().Any(name => name == vehicleType);
     }
 
     public int GetTollFee(DateTime date, Vehicle vehicle)
@@ -74,8 +69,8 @@ public class CongestionTaxCalculator
         int month = date.Month;
         int day = date.Day;
 
-        if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) return true;
-
+        var isWeekend = CheckIsWeekend(date);
+        var isSpecialMonth = CheckIsSpecialMonth(date);
         if (year == 2013)
         {
             if (month == 1 && day == 1 ||
@@ -91,6 +86,17 @@ public class CongestionTaxCalculator
             }
         }
         return false;
+    }
+
+    private bool CheckIsWeekend(DateTime date)
+    {
+        return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday; 
+    }
+
+    private bool CheckIsSpecialMonth(DateTime date)
+    {
+        var specialMoths = new HashSet<int>() { 7 };
+        return specialMoths.Contains(date.Month);
     }
 
     private enum TollFreeVehicles
