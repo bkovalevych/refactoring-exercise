@@ -4,9 +4,9 @@ namespace Domain.Rules.CarRules.Rules
 {
     public class IsSpecificCarRule : AbstractCarRule
     {
-        public override bool Evaluate(IVehicle inputParameter)
+        public override bool Evaluate(IVehicle? inputParameter)
         {
-            return !inputParameter.IsFree;
+            return !(inputParameter?.IsFree ?? false);
         }
     }
 }

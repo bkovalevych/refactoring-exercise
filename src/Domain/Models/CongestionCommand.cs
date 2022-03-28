@@ -6,6 +6,6 @@ namespace Domain.Models
     {
         public IEnumerable<DateTime> Dates { get; set; }
 
-        public IVehicle Vehicle { get; set; }
+        public IVehicle? Vehicle { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using congestion.calculator;
+﻿using Domain.Models;
+using Domain.Rules.Calculator;
+using Domain.Vehicles;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -9,15 +11,19 @@ namespace Domain.Tests
     {
         [Theory]
         [MemberData(nameof(GetTaxInputData))]
-        public void WithVehicleAndDateTimes_ReturnTax(Vehicle vehicle, DateTime[] dates, int expectedTax)
+        public void WithVehicleAndDateTimes_ReturnTax(IVehicle vehicle, DateTime[] dates, int expectedTax)
         {
             // Arrange
 
-            var calculator = new CongestionTaxCalculator();
-
+            var calculator = new CalculatorRulesEngine();
+            var input = new CongestionCommand()
+            {
+                Vehicle = vehicle,
+                Dates = dates
+            };
             // Act
 
-            var result = calculator.GetTax(vehicle, dates);
+            var result = calculator.Execute(input);
 
             // Assert
 

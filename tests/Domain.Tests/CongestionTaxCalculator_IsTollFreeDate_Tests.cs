@@ -1,3 +1,4 @@
+using Domain.Rules.DateRules;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -12,15 +13,15 @@ namespace Domain.Tests
         {
             // Arrange
 
-            var calculator = new CongestionTaxCalculator();
+            var dateRules = new DateRulesEngine();
 
             // Act
 
-            var result = calculator.IsTollFreeDate(date);
+            var result = dateRules.Execute(date);
 
             // Assert
 
-            Assert.True(result);
+            Assert.False(result);
         }
 
         [Theory]
@@ -29,15 +30,15 @@ namespace Domain.Tests
         {
             // Arrange
 
-            var calculator = new CongestionTaxCalculator();
+            var dateRules = new DateRulesEngine();
 
             // Act
 
-            var result = calculator.IsTollFreeDate(date);
+            var result = dateRules.Execute(date);
 
             // Assert
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         public static IEnumerable<object[]> FreeDates =>
