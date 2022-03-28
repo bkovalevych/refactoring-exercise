@@ -17,10 +17,27 @@ namespace Domain.Rules.FeeRules.Rules
 
         public override int Evaluate(DateTime inputParameter)
         {
-            var time = TimeOnly.FromDateTime(inputParameter);
-            var cost = _feeSlots.FirstOrDefault(x => TimeOnly.FromDateTime(x.TimeFrom) <= time 
-            && time <= TimeOnly.FromDateTime(x.TimeTo))?.Cost;
+            var cost = _feeSlots.FirstOrDefault(
+                x => FindHandler(x, inputParameter))?.Cost;
             return cost ?? 0;
+        }
+
+        private bool FindHandler(FeeSlot slot, DateTime time)
+        {
+            var from = slot.TimeFrom;
+            var preparedTime = new DateTime(
+                from.Year, 
+                from.Month,
+                from.Day,
+                time.Hour, 
+                time.Minute,
+                0);
+            var timeTo = slot.TimeTo;
+            if(from > timeTo)
+            {
+                timeTo = timeTo.AddDays(1);
+            }
+            return from <= preparedTime && preparedTime <= timeTo;
         }
     }
 }

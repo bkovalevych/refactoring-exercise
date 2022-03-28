@@ -6,7 +6,7 @@ namespace Domain.Rules.CarRules.Rules
     {
         public override bool Evaluate(IVehicle inputParameter)
         {
-            return !inputParameter.IsFree;
+            return !(inputParameter?.IsFree ?? false);
         }
     }
 }
