@@ -68,7 +68,7 @@ public class CongestionTaxCalculator
         else return 0;
     }
 
-    private Boolean IsTollFreeDate(DateTime date)
+    public Boolean IsTollFreeDate(DateTime date)
     {
         int year = date.Year;
         int month = date.Month;
