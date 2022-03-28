@@ -14,27 +14,53 @@ public class CongestionTaxCalculator
     {
         DateTime intervalStart = dates[0];
         int totalFee = 0;
+        int tempFee = 0;
+        var hour = TimeSpan.FromHours(1);
         foreach (DateTime date in dates)
         {
             int nextFee = GetTollFee(date, vehicle);
-            int tempFee = GetTollFee(intervalStart, vehicle);
 
-            long diffInMillies = date.Millisecond - intervalStart.Millisecond;
-            long minutes = diffInMillies / 1000 / 60;
-
-            if (minutes <= 60)
+            if (date - intervalStart <= hour)
             {
-                if (totalFee > 0) totalFee -= tempFee;
-                if (nextFee >= tempFee) tempFee = nextFee;
-                totalFee += tempFee;
+                tempFee = Math.Max(tempFee, nextFee);
             }
             else
             {
-                totalFee += nextFee;
+                totalFee += tempFee;
+                tempFee = nextFee;
+                intervalStart = date;
             }
         }
-        if (totalFee > 60) totalFee = 60;
-        return totalFee;
+        return Math.Max(60, totalFee + tempFee);
+    }
+
+    public int GetTaxMyDecision(Vehicle vehicle, DateTime[] dates)
+    {
+        if (IsTollFreeVehicle(vehicle))
+        {
+            return 0;
+        }
+        var hour = TimeSpan.FromHours(1);
+        var maxFee = 60;
+        var result = dates.Where(date => !IsTollFreeDate(date))
+            .OrderBy(date => date)
+            .Aggregate(new TollTaxModel(),
+            (model, date) =>
+            {
+                if (date - model.LastTaxTime > hour)
+                {
+                    model.LastTaxTime = date;
+                    model.Sum += model.LastTax;
+                    model.LastTax = GetTollFee(date, vehicle);
+                }
+                else
+                {
+                    model.LastTax = Math.Max(model.LastTax, GetTollFee(date, vehicle));
+                }
+                return model;
+            },
+            model => Math.Min(maxFee, model.LastTax + model.Sum));
+        return result;
     }
 
     private bool IsTollFreeVehicle(Vehicle vehicle)
@@ -63,31 +89,37 @@ public class CongestionTaxCalculator
         else return 0;
     }
 
-    private Boolean IsTollFreeDate(DateTime date)
+    private bool IsTollFreeDate(DateTime date)
     {
-        int year = date.Year;
-        int month = date.Month;
-        int day = date.Day;
-
         var isWeekend = CheckIsWeekend(date);
         var isSpecialMonth = CheckIsSpecialMonth(date);
-        if (year == 2013)
-        {
-            if (month == 1 && day == 1 ||
-                month == 3 && (day == 28 || day == 29) ||
-                month == 4 && (day == 1 || day == 30) ||
-                month == 5 && (day == 1 || day == 8 || day == 9) ||
-                month == 6 && (day == 5 || day == 6 || day == 21) ||
-                month == 7 ||
-                month == 11 && day == 1 ||
-                month == 12 && (day == 24 || day == 25 || day == 26 || day == 31))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+        var isHoliday = CheckIsHoliday(date);
 
+        return isHoliday || isWeekend || isSpecialMonth;
+    }
+    private bool CheckIsHoliday(DateTime date)
+    {
+        var holidays = new HashSet<DateOnly>()
+            {
+                new DateOnly(2013, 1, 1),
+                new DateOnly(2013, 3, 28),
+                new DateOnly(2013, 3, 29),
+                new DateOnly(2013, 4, 1),
+                new DateOnly(2013, 4, 30),
+                new DateOnly(2013, 5, 1),
+                new DateOnly(2013, 5, 8),
+                new DateOnly(2013, 5, 9),
+                new DateOnly(2013, 6, 5),
+                new DateOnly(2013, 6, 6),
+                new DateOnly(2013, 6, 21),
+                new DateOnly(2013, 11, 1),
+                new DateOnly(2013, 12, 24),
+                new DateOnly(2013, 12, 25),
+                new DateOnly(2013, 12, 26),
+                new DateOnly(2013, 12, 31)
+            };
+        return holidays.Contains(DateOnly.FromDateTime(date));
+    }
     private bool CheckIsWeekend(DateTime date)
     {
         return date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday; 
@@ -107,5 +139,14 @@ public class CongestionTaxCalculator
         Diplomat = 3,
         Foreign = 4,
         Military = 5
+    }
+
+    private class TollTaxModel
+    {
+        public int LastTax { get; set; }
+
+        public int Sum { get; set; }
+
+        public DateTime LastTaxTime { get; set; }
     }
 }
