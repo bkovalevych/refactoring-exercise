@@ -16,7 +16,7 @@ namespace Domain.Rules.FeeRules.Rules
 
         public bool IsSutisfuied(DateTime inputParameter)
         {
-            return _dateRulesEngine.Execute(inputParameter);
+            return !_dateRulesEngine.Execute(inputParameter);
         }
     }
 }

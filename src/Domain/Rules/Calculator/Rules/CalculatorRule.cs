@@ -2,6 +2,8 @@
 using Domain.Rules.CarRules;
 using Domain.Rules.FeeRules;
 using Domain.Rules.Generic;
+using Domain.Settings;
+using Microsoft.Extensions.Options;
 
 namespace Domain.Rules.Calculator.Rules
 {
@@ -11,9 +13,12 @@ namespace Domain.Rules.Calculator.Rules
         private readonly CarRulesEngine _carRulesEngine;
         private readonly TimeSpan _maxDelay;
 
-        public CalculatorRule(CarRulesEngine carRulesEngine, FeeRulesEngine feeRulesEngine)
+        public CalculatorRule(
+            CarRulesEngine carRulesEngine, 
+            FeeRulesEngine feeRulesEngine, 
+            IOptions<FeeSettings> feeSettings)
         {
-            _maxDelay = TimeSpan.FromHours(1);
+            _maxDelay = TimeSpan.FromMinutes(feeSettings.Value.MaxDelayForSingleTaxInMinutes);
             _carRulesEngine = carRulesEngine;
             _feeRulesEngine = feeRulesEngine;
         }
@@ -46,7 +51,7 @@ namespace Domain.Rules.Calculator.Rules
 
         public bool IsSutisfuied(CongestionCommand inputParameter)
         {
-            return _carRulesEngine.Execute(inputParameter.Vehicle);
+            return !_carRulesEngine.Execute(inputParameter.Vehicle);
         }
     }
 }

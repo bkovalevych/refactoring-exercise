@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using Domain.Rules.DateRules;
+using Domain.Settings;
 using Microsoft.Extensions.Options;
 
 namespace Domain.Rules.FeeRules.Rules
@@ -8,10 +9,10 @@ namespace Domain.Rules.FeeRules.Rules
     {
         private readonly List<FeeSlot> _feeSlots;
 
-        public FeeInSpecialTimeRule(DateRulesEngine dateRulesEngine, IOptions<List<FeeSlot>> feeSlots) 
+        public FeeInSpecialTimeRule(DateRulesEngine dateRulesEngine, IOptions<FeeSettings> feeSlots) 
             : base(dateRulesEngine)
         {
-            _feeSlots = feeSlots.Value;
+            _feeSlots = feeSlots.Value.FeeSlots;
         }
 
 

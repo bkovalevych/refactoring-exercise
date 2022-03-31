@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Domain.Rules.Calculator;
 using Domain.Vehicles;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -22,7 +23,7 @@ namespace Domain.Tests
         {
             // Arrange
 
-            var calculator = new CalculatorRulesEngine(_fixture.ServiceProvider);
+            var calculator = _fixture.ServiceProvider.GetRequiredService<CalculatorRulesEngine>();
             var command = new CongestionCommand()
             {
                 Dates = dates,

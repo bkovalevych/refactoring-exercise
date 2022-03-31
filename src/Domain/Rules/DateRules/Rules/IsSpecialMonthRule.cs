@@ -1,11 +1,20 @@
-﻿namespace Domain.Rules.DateRules.Rules
+﻿using Domain.Settings;
+using Microsoft.Extensions.Options;
+
+namespace Domain.Rules.DateRules.Rules
 {
     public class IsSpecialMonthRule : AbstractDateRule
     {
-        public HashSet<int> SpecialMonths = new HashSet<int>() { 7 };
+        private readonly HashSet<int> _freeMonths;
+        public IsSpecialMonthRule(IOptions<FreeDaySettings> options)
+        {
+            _freeMonths = options.Value
+                .FreeMonths
+                .ToHashSet();
+        }
         public override bool Evaluate(DateTime inputParameter)
         {
-            return SpecialMonths.Contains(inputParameter.Month);
+            return _freeMonths.Contains(inputParameter.Month);
         }
     }
 }

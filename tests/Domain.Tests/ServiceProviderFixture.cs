@@ -1,12 +1,11 @@
-﻿using Domain.Models;
-using Domain.Rules.Calculator;
+﻿using Domain.Rules.Calculator;
 using Domain.Rules.CarRules;
 using Domain.Rules.DateRules;
 using Domain.Rules.FeeRules;
+using Domain.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Domain.Tests
@@ -22,8 +21,11 @@ namespace Domain.Tests
                 .Build();
             var serviceCollection = new ServiceCollection();
 
-            serviceCollection.Configure<List<FeeSlot>>(
-                options => Configuration.GetSection("FeeSlots")
+            serviceCollection.Configure<FeeSettings>(
+                options => Configuration.GetSection(nameof(FeeSettings))
+                .Bind(options));
+            serviceCollection.Configure<FreeDaySettings>(
+                options => Configuration.GetSection(nameof(FreeDaySettings))
                 .Bind(options));
             serviceCollection.AddScoped<CalculatorRulesEngine>();
             serviceCollection.AddScoped<FeeRulesEngine>();

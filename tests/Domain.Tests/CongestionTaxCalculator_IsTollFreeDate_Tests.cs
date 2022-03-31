@@ -28,7 +28,7 @@ namespace Domain.Tests
 
             // Assert
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         [Theory]
@@ -45,7 +45,7 @@ namespace Domain.Tests
 
             // Assert
 
-            Assert.True(result);
+            Assert.False(result);
         }
 
         public static IEnumerable<object[]> FreeDates =>

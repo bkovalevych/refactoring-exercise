@@ -11,7 +11,7 @@ namespace Domain.Rules.DateRules
         }
         public override bool Execute(DateTime inputParameter)
         {
-            return !base.Execute(inputParameter);
+            return base.Execute(inputParameter);
         }
 
         protected override bool Reduce(bool one, bool two)

@@ -1,16 +1,19 @@
 ﻿using Domain.Models;
 using Domain.Rules.Calculator.Rules;
 using Domain.Rules.Generic;
+using Domain.Settings;
+using Microsoft.Extensions.Options;
 
 namespace Domain.Rules.Calculator
 {
     public class CalculatorRulesEngine : RulesEngine<CalculatorRule, CongestionCommand, int>
     {
         private readonly int _maxFee;
-        public CalculatorRulesEngine(IServiceProvider serviceProvider) : base(serviceProvider)
+        public CalculatorRulesEngine(IServiceProvider serviceProvider, IOptions<FeeSettings> feeSettings) 
+            : base(serviceProvider)
         {
 
-            _maxFee = 60;
+            _maxFee = feeSettings.Value.MaxTaxPerDay;
         }
 
         public override int Execute(CongestionCommand inputParameter)

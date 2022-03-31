@@ -3,14 +3,21 @@ using Domain.Rules.Calculator;
 using Domain.Rules.CarRules;
 using Domain.Rules.DateRules;
 using Domain.Rules.FeeRules;
+using Domain.Settings;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<List<FeeSlot>>(config =>
+builder.Services.Configure<FeeSettings>(config =>
 {
-    builder.Configuration.GetSection("FeeSlots")
+    builder.Configuration.GetSection(nameof(FeeSettings))
+    .Bind(config);
+});
+
+builder.Services.Configure<FreeDaySettings>(config =>
+{
+    builder.Configuration.GetSection(nameof(FreeDaySettings))
     .Bind(config);
 });
 
