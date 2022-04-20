@@ -1,23 +1,38 @@
-﻿using congestion.calculator;
+﻿using Domain.Models;
+using Domain.Rules.Calculator;
+using Domain.Vehicles;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using Xunit;
 
 namespace Domain.Tests
 {
-    public class CongestionTaxCalculator_GetTax_Tests
+    public class CongestionTaxCalculator_GetTax_Tests : IClassFixture<ServiceProviderFixture>
     {
+        ServiceProviderFixture _fixture;
+
+        public CongestionTaxCalculator_GetTax_Tests(ServiceProviderFixture fixture)
+        {
+            _fixture = fixture;
+        }
+
         [Theory]
         [MemberData(nameof(GetTaxInputData))]
-        public void WithVehicleAndDateTimes_ReturnTax(Vehicle vehicle, DateTime[] dates, int expectedTax)
+        public void WithVehicleAndDateTimes_ReturnTax(IVehicle vehicle, DateTime[] dates, int expectedTax)
         {
             // Arrange
 
-            var calculator = new CongestionTaxCalculator();
+            var calculator = _fixture.ServiceProvider.GetRequiredService<CalculatorRulesEngine>();
+            var command = new CongestionCommand()
+            {
+                Dates = dates,
+                Vehicle = vehicle,
+            };
 
             // Act
 
-            var result = calculator.GetTax(vehicle, dates);
+            var result = calculator.Execute(command);
 
             // Assert
 

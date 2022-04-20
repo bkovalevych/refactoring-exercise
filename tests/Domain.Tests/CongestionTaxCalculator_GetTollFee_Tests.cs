@@ -1,24 +1,30 @@
-﻿using congestion.calculator;
+﻿using Domain.Rules.FeeRules;
 using System;
 using System.Collections.Generic;
 using Xunit;
 
 namespace Domain.Tests
 {
-    public class CongestionTaxCalculator_GetTollFee_Tests
+    public class CongestionTaxCalculator_GetTollFee_Tests : IClassFixture<ServiceProviderFixture>
     {
+        ServiceProviderFixture _fixture;
+
+        public CongestionTaxCalculator_GetTollFee_Tests(ServiceProviderFixture fixture)
+        {
+            _fixture = fixture;
+        }
+
         [Theory]
         [MemberData(nameof(DatesAndExpectedCosts))]
         public void WithDateAndCar_ReturnsCost(DateTime date, int expectedCost)
         {
             // Arrange
 
-            var calculator = new CongestionTaxCalculator();
-            var car = new Car();
+            var calculator = new FeeRulesEngine(_fixture.ServiceProvider);
             
             // Act
 
-            var result = calculator.GetTollFee(date, car);
+            var result = calculator.Execute(date);
 
             // Assert
 

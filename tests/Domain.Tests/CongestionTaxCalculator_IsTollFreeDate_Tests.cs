@@ -1,22 +1,30 @@
+using Domain.Rules.DateRules;
 using System;
 using System.Collections.Generic;
 using Xunit;
 
 namespace Domain.Tests
 {
-    public class CongestionTaxCalculator_IsTollFreeDate_Tests
+    public class CongestionTaxCalculator_IsTollFreeDate_Tests : IClassFixture<ServiceProviderFixture>
     {
+        ServiceProviderFixture _fixture;
+
+        public CongestionTaxCalculator_IsTollFreeDate_Tests(ServiceProviderFixture fixture)
+        {
+            _fixture = fixture;
+        }
+
         [Theory]
         [MemberData(nameof(FreeDates))]
         public void WithFreeDate_ReturnTrue(DateTime date)
         {
             // Arrange
 
-            var calculator = new CongestionTaxCalculator();
+            var calculator = new DateRulesEngine(_fixture.ServiceProvider);
 
             // Act
 
-            var result = calculator.IsTollFreeDate(date);
+            var result = calculator.Execute(date);
 
             // Assert
 
@@ -29,11 +37,11 @@ namespace Domain.Tests
         {
             // Arrange
 
-            var calculator = new CongestionTaxCalculator();
+            var calculator = new DateRulesEngine(_fixture.ServiceProvider);
 
             // Act
 
-            var result = calculator.IsTollFreeDate(date);
+            var result = calculator.Execute(date);
 
             // Assert
 
